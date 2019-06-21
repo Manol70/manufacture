@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+
+{% block 'body' %}
+
+
+<div class="row">
+    <h1>СПИСЪК КЛИЕНТИ</h1>
+    {% for f in customer %}
+    <div class="col-lg-6">
+         <h5>{{f.town}}</h5>
+        <p>{{f.name}}</p>
+    </div>
+    <div class="col-lg-3"></div>
+    {% endfor %}
+</div>
+
+<br class="table-responsive">
+
+    <table class="table table-striped table-bordered table-col-sm-pull-12" >
+    <thead >
+    <tr style="background-color: #9d9d9d; font-size:90%;"  >
+        <th>Име клиент</th>
+        <th>Населено място</th>
+        <th>Адрес</th>
+        <th>Телефон 1</th>
+        <th>Телефон 2</th>
+        <th>Ел. поща</th>
+        <th>Забележка</th>
+    </tr>
+
+    {% for f in customer %}
+    <tr>
+        <th>{{f.name}}</th>
+        <th>{{f.town}}</th>
+        <th>{{f.address}}</th>
+        <th>{{f.phone1}}</th>
+        <th>{{f.phone2}}</th>
+        <th>{{f.mail}}</th>
+        <th>{{f.note}}</th>
+        <th>
+        <a href="{% url 'customer-edit' f.id  %}">edit</a>
+        </th>
+    </tr>
+    {% endfor %}
+    </thead>
+
+
+
+{% endblock %}

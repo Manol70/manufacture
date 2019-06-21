@@ -1,0 +1,97 @@
+{% extends 'index.html' %}
+
+{% block 'body' %}
+{% load subtract_tags %}
+<script>
+    $(function () {
+        $('.datetime-input').datetimepicker({
+            format:'YYYY-MM-DD '
+        });
+    });
+</script>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            <form style="border:1px solid grey; margin: 0% 0%; padding: 10% 5%" method="post">
+            {% csrf_token %}
+                {{form.as_p}}
+                <!--{{form.your_name.label_tag}}{{form.your_name}}{{form.customer.label_tag}} {{form.customer}}-->
+
+
+            <input type="submit" value="Submit">
+            </form>
+        </div>
+        </div>
+    <p>{{ sentForm }}</p>
+    {% if sentForm %}
+    {{ typ }}
+<p>Extra html for the bigger view</p>
+    {% else %}
+    <p>nqma go</p>
+    {% endif %}
+
+<br class="table-responsive">
+
+    <table class="table table-striped table-bordered table-col-sm-pull-12" >
+    <thead >
+    <tr style="background-color: #9d9d9d; font-size:90%;"  >
+        <th>Номер</th>
+        <th>клиент</th>
+        <th>произв.схема</th>
+        <th>монтаж</th>
+        <th>тип</th>
+        <th>м2</th>
+        <th>от дата</th>
+        <th>за дата</th>
+        <th>сума</th>
+        <th>платено</th>
+        <th>остатък</th>
+        <th>плащане</th>
+        <th>стъклопакет</th>
+        <th>статус</th>
+        <th>СЃСЉРѕР±С‰РµРЅРёРµ РґРѕ РєР»РёРµРЅС‚Р°</th>
+        <th>забележка</th>
+        <th></th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+        <th>{{ order.id }}</th>
+        <th>{{ order.customer_id }} {{order.scheme}}</th>
+        {% if order.scheme == '' %}
+        <th><a style="color:orange" href="{% url 'upload' %}?id={{ order.id }}">Избери схема</a></th>
+        {% else %}
+        <th><a href="{{ STATIC_URL }}/media/{{ order.scheme }}" target="_blank">виж</a> </th>
+        {% endif %}
+        <th>{{ order.type_montage_id }}</th>
+        <th>{{ order.type_id }}</th>
+        <th>{{ order.quadrature }}</th>
+        <th>{{ order.by_date }}</th>
+        <th>{{ order.for_date }}</th>
+        <th>{{ order.price }}</th>
+        <th>{{ order.paid }}</th>
+        <th>{{ order.price|subtract:order.paid}}</th>
+        <th>
+            <form action="{% url 'payment' %}" method="post">{% csrf_token %}
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <input type="hidden" name="customer" value="{{ order.customer_id }}">
+                <input type="hidden" name = "price" value="{{ order.price }}">
+                <input type="hidden" name = "paid_so_far" value="{{ order.paid }}">
+                <input type="hidden" name = "balance" value="{{ order.price|subtract:order.paid }}">
+                <input type="hidden" name="type_montage" value="{{ order.type_montage_id }}">
+            <input class="favorite styled"
+       type="submit"
+       value="Плащане">
+            </form>
+        </th>
+        <th>{{ order.glass_id }}</th>
+        <th>{{ order.status_id }}</th>
+        <th>{{ order.number }}</th>
+        <th>{{ order.number }}</th>
+        </tr>
+    {% endfor %}
+
+    </thead>
+
+    </table>
+</div>
+{% endblock %}
